@@ -1,0 +1,140 @@
+
+## NEW WAY  new format shown with blank lines around "referenced schemas"
+#We included the referenced schemas here (but we know they belong in separate files).
+#We will fix the syntx errors after we get a copy of jsonlint or find some other way to check the syntax. 
+
+{"namespace": "gcn.notices",
+ "type": "record",
+ "name": "Swift-BAT-GRB-Position",
+ "fields": [
+     {"name": "TITLE", "type": "string"},
+     {"name": "NOTICE_DATE", "type": "string", "doc": "date and time of notice creation"},
+     {"name": "NOTICE_TYPE", "type": "string", "doc": "type of notice"},
+#    {"name": "TRIGGER_NUM", "type" : "long", "doc": "string of digits uniquely identifying event" },
+#      OR 
+     {"name": "TRIGGER_NUM", "type" : "string", "doc": "string of digits uniquely identifying event" },
+     {"name": "SEG_NUM", "type" : "long", "doc": "Swift serial number (for Swift notice types only)" },
+
+     {"name": "ra-dec-positions","type":"ra_dec_positions"},
+
+     {"name": "GRB_ERROR", "type": "float", "doc": "[arcmin radius, statistical only]"},
+     {"name": "GRB_INTEN", "type": "int", "doc": "counts in trigger interval [cnts]"},
+     {"name": "GRB_IMAGE_PEAK", "type": "int", "doc": "amplitude of peak in image [image_cnts]"},
+     {"name": "TRIGGER_DUR", "type": "float", "doc": "trigger width delta_t [sec]"},
+     {"name": "TRIGGER_INDEX", "type": "int","doc":"id number of successful trigger criteria"},
+     {"name": "BKG_INTEN", "type": "int", "doc": "background level [cnts]"},
+     {"name": "BKG_TIME", "type": "float","doc": "start time of background interval [SOD]"},
+     {"name": "BKG_DUR", "type": "int","doc": "duration of background interval [sec]"},
+     {"name": "GRB_DATE", "type": "int", "doc": "date of GRB/Transient [TJD]"},
+     {"name": "GRB_TIME", "type": "float","doc": "time of GRB/Transient [SOD]"},
+     {"name": "GRB_PHI", "type": "float","doc": "phi orientation of GRB/Transient wrt BAT instrument [deg]"},
+     {"name": "GRB_THETA", "type": "float","doc": "theta orientation of GRB/Transient wrt BAT instrument [deg]"},
+     {"name": "SOLN_STATUS", "type": "int", "doc": "flag bits"},
+     {"name": "RATE_SIGNIF", "type": "float","doc": "strength of rate domain at time of trigger [sigma]"},
+     {"name": "IMAGE_SIGNIF", "type": "float","doc": "strength of image domain at time of trigger [sigma]"},
+
+     {"type" : "array", "name": "MERIT_PARAMS", "items" : "int", "doc": "weighting factors for the 10 paramters in the trigger criteria"},
+                                                  Q: how do we specify the array length?  need to investigate array usage
+
+     {"name":"astronomical-configuration","type":"astro_config"},
+
+     {"name": "earth-location","type": "earth_location"},
+
+     {"type" : "array", "name": "COMMENTS", "items" : "string"}
+  ]
+}
+
+##REFERENCED SCHEMAS: 
+# Should we use an array or not for these fields?
+#WITH ARRAY 
+	{"name": "ra-dec-positions",
+		"type":{
+			"type":"array",
+			"items":{
+     				"name": "GRB_RA_J2000", "type": "double", "doc:","ra of GRB/Transient [deg]",
+     				"name": "GRB_RA_CURRENT", "type": "double", "doc:","ra of GRB/Transient [deg]",
+     				"name": "GRB_RA_1950", "type": "double", "doc:","ra of GRB/Transient [deg]",
+     				"name": "GRB_DEC_J2000", "type": "double", "doc:","dec of GRB/Transient [deg]",
+     				"name": "GRB_DEC_CURRENT","type": "double", "doc:","dec of GRB/Transient [deg]",
+     				"name": "GRB_DEC_1950", "type": "double", "doc:","dec of GRB/Transient [deg]"
+			}
+		}
+	}
+#OR WITHOUT ARRAY
+	{ "type": "record",
+          "namespace": "gcn.notices",
+          "name": "ra-dec-positions",
+			"fields":[
+     				"name": "GRB_RA_J2000", "type": "double", "doc:","ra of GRB/Transient [deg]",
+     				"name": "GRB_RA_CURRENT", "type": "double", "doc:","ra of GRB/Transient [deg]",
+     				"name": "GRB_RA_1950", "type": "double", "doc:","ra of GRB/Transient [deg]",
+     				"name": "GRB_DEC_J2000", "type": "double", "doc:","dec of GRB/Transient [deg]",
+     				"name": "GRB_DEC_CURRENT","type": "double", "doc:","dec of GRB/Transient [deg]",
+     				"name": "GRB_DEC_1950", "type": "double", "doc:","dec of GRB/Transient [deg]"
+			]
+	}
+
+
+
+#AND NOW THE REST OF THE REFERENCED SCHEMAS:
+       {
+	"type": "record",
+        "name":"astronomical-configuration",
+        "fields": [
+		{"name": "sun",
+			"type":{
+				"type":"array",
+				"items":{
+					"name":"sun-ra","type":"float", "doc": "right ascension of sun (deg)",
+					"name":"sun-dec","type":"float", "doc": "declination of sun (deg)",
+					"name":"sun-dist","type":"float", "doc": "angular distance between sun and source (deg)",
+					"name":"sun-hourangle","type":"float", "doc": "hour angle between sun and source (hours)"
+				}
+			}
+		}
+		{"name": "moon",
+			"type":{
+				"type":"array",
+				"items":{
+					"name":"moon-ra","type":"float", "doc": "right ascension of moon (deg)",
+					"name":"moon-dec","type":"float", "doc": "declination of moon (deg)",
+					"name":"moon-dist","type":"float", "doc": "angular distance between moon and source (deg)",
+					"name":"moon-illumination","type":"float", "doc": "illumination of the moon (percent)"
+				}
+			}
+		}
+		{"name": "galactic-coords",
+			"type":{
+				"type":"array",
+				"items":{
+					"name":"galactic-long","type":"float", "doc": "galactic longitude of source (deg)",
+					"name":"galactic-lat","type":"float", "doc": "galactic latitude of source (deg)",
+				}
+			}
+		}
+		{"name": "ecliptic-coords",
+			"type":{
+				"type":"array",
+				"items":{
+					"name":"ecliptic-long","type":"float", "doc": "ecliptic longitude of source (deg)",
+					"name":"ecliptic-lat","type":"float", "doc": "ecliptic latitude of source (deg)",
+				}
+			}
+		}
+	]
+	}
+
+
+
+	"type": "record",
+	"name": "earth-location",
+        "fields": [
+		"type":{
+			"type":"array",
+			"items":{
+				"name":"earth-long","type":"float", "doc": "Earth longitude of source (deg)",
+				"name":"earth-lat","type":"float", "doc": "Earth latitude of source (deg)",
+			}
+		}
+	]
+	}
